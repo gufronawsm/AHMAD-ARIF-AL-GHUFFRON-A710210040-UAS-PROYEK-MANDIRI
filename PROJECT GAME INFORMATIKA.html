@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tebak Gambar Informatika</title>
+<style>
+  :root {
+    --primary: #2563EB;
+    --primary-dark: #1D4ED8;
+    --secondary: #10B981;
+    --accent: #F59E0B;
+    --danger: #EF4444;
+    --bg: #F0F4FF;
+    --card: #FFFFFF;
+    --text: #1E293B;
+    --text-muted: #64748B;
+    --border: #E2E8F0;
+    --star-on: #F59E0B;
+    --star-off: #CBD5E1;
+    --heart: #EF4444;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(37,99,235,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+  body { background: var(--bg); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+
+  /* ======= SCREEN SYSTEM ======= */
+  .screen { display: none; width: 100%; max-width: 420px; min-height: 640px; padding: 0; flex-direction: column; }
+  .screen.active { display: flex; }
+
+  .phone-frame {
+    width: 100%;
+    max-width: 420px;
+    min-height: 640px;
+    background: var(--card);
+    border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(37,99,235,0.18), 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ======= HEADER ======= */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 12px;
+    background: var(--primary);
+    color: white;
+  }
+  .header h2 { font-size: 16px; font-weight: 600; }
+  .btn-back {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .btn-back:hover { background: rgba(255,255,255,0.35); }
+
+  /* ======= SCREEN 1: MENU UTAMA ======= */
+  #screen-menu {
+    background: linear-gradient(160deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%);
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 40px 32px;
+  }
+  .menu-logo {
+    width: 90px; height: 90px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+    margin-bottom: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+  .menu-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: white;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .menu-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .menu-stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .stat-pill {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 100px;
+    padding: 8px 18px;
+    display: flex; align-items: center; gap: 6px;
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .menu-buttons { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+  .btn-menu-primary {
+    background: white;
+    color: var(--primary);
+    border: none;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .btn-menu-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .btn-menu-primary:active { transform: scale(0.97); }
+  .btn-menu-secondary {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    padding: 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s;
+  }
+  .btn-menu-secondary:hover { background: rgba(255,255,255,0.25); }
+
+  /* ======= SCREEN 2: PILIH LEVEL ======= */
+  #screen-level {
+    background: var(--bg);
+    padding: 0;
+    gap: 0;
+  }
+  .level-header {
+    background: var(--primary);
+    padding: 20px 20px 28px;
+    color: white;
+  }
+  .level-header h1 { font-size: 22px; font-weight: 800; margin-top: 4px; }
+  .level-header p { font-size: 13px; opacity: 0.75; margin-top: 4px; }
+  .level-grid {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .level-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s;
+    position: relative;
+  }
+  .level-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+  .level-card.locked { opacity: 0.45; cursor: not-allowed; }
+  .level-card.locked:hover { border-color: transparent; transform: none; }
+  .level-card.completed { border-color: var(--secondary); }
+  .level-number { font-size: 22px; font-weight: 800; color: var(--primary); }
+  .level-stars { font-size: 14px; margin: 4px 0 2px; letter-spacing: 2px; }
+  .level-name { font-size: 10px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; }
+  .lock-icon { font-size: 22px; }
+
+  /* ======= SCREEN 3: PERMAINAN ======= */
+  #screen-game { background: var(--bg); padding: 0; }
+  .game-header {
+    background: var(--primary);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+  }
+  .game-info { display: flex; align-items: center; gap: 12px; }
+  .lives-display { display: flex; gap: 4px; }
+  .heart { font-size: 18px; }
+  .timer-display {
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer-display.warning { background: rgba(239,68,68,0.4); animation: pulse 0.8s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+  .game-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
+  .question-num { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  .progress-bar { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--secondary); border-radius: 99px; transition: width 0.4s; }
+
+  .image-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-image {
+    width: 140px; height: 140px;
+    object-fit: contain;
+    filter: none;
+    font-size: 100px;
+    text-align: center;
+    line-height: 1;
+  }
+  .game-image.blurred { filter: blur(8px); }
+  .hint-badge {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: var(--accent);
+    color: white;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    display: none;
+  }
+  .hint-badge.show { display: block; }
+
+  .answer-boxes {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 8px 0;
+  }
+  .answer-box {
+    width: 38px; height: 44px;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .answer-box.empty { border-style: dashed; color: transparent; }
+  .answer-box.correct { border-color: var(--secondary); color: var(--secondary); background: #ECFDF5; }
+  .answer-box.wrong { border-color: var(--danger); color: var(--danger); background: #FEF2F2; animation: shake 0.4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+
+  .keyboard-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 6px;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 12px;
+    box-shadow: var(--shadow);
+  }
+  .key-btn {
+    height: 38px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+    text-transform: uppercase;
+  }
+  .key-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+  .key-btn:active { transform: scale(0.92); }
+  .key-btn.used { opacity: 0.3; pointer-events: none; }
+  .key-del {
+    grid-column: span 2;
+    background: #FEF2F2;
+    border-color: #FECACA;
+    color: var(--danger);
+  }
+  .key-del:hover { background: var(--danger); color: white; border-color: var(--danger); }
+  .key-hint {
+    grid-column: span 2;
+    background: #FFFBEB;
+    border-color: #FDE68A;
+    color: var(--accent);
+    font-size: 11px;
+  }
+  .key-hint:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .action-row { display: flex; gap: 10px; }
+  .btn-skip {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: white;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-skip:hover { border-color: var(--danger); color: var(--danger); }
+  .btn-clear-all {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #FECACA;
+    border-radius: 12px;
+    background: #FEF2F2;
+    color: var(--danger);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all 0.2s;
+  }
+  .btn-clear-all:hover { background: var(--danger); color: white; border-color: var(--danger); }
+  .btn-clear-all:active { transform: scale(0.96); }
+
+  /* ======= SCREEN 4: CARA BERMAIN ======= */
+  #screen-cara { background: var(--bg); }
+  .cara-body { padding: 20px; flex: 1; overflow-y: auto; }
+  .step-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .step-num {
+    width: 36px; height: 36px;
+    background: var(--primary);
+    border-radius: 50%;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-text h3 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .step-text p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  /* ======= SCREEN 5: HASIL ======= */
+  #screen-hasil { background: var(--bg); }
+  .hasil-body { padding: 24px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .hasil-banner {
+    background: var(--primary);
+    border-radius: var(--radius);
+    padding: 28px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+  }
+  .hasil-label { font-size: 12px; opacity: 0.75; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .hasil-word { font-size: 28px; font-weight: 800; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 2px; }
+  .hasil-stars { font-size: 36px; margin: 12px 0; }
+  .hasil-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 14px 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .stat-val { font-size: 20px; font-weight: 800; color: var(--primary); }
+  .hasil-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+  .btn-outline {
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    padding: 14px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { background: var(--bg); }
+
+  /* ======= SCREEN 6: PENGATURAN ======= */
+  #screen-pengaturan { background: var(--bg); }
+  .peng-body { padding: 20px; flex: 1; overflow-y: auto; }
+  .setting-row {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .setting-info { display: flex; align-items: center; gap: 12px; }
+  .setting-icon { font-size: 22px; }
+  .setting-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .setting-desc { font-size: 11px; color: var(--text-muted); }
+  .toggle {
+    width: 48px; height: 28px;
+    background: var(--border);
+    border-radius: 99px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .toggle::after {
+    content:''; position: absolute;
+    width: 22px; height: 22px;
+    background: white;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: left 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .toggle.on { background: var(--secondary); }
+  .toggle.on::after { left: 23px; }
+  .slider-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .slider-row .setting-info { width: 100%; justify-content: space-between; }
+  input[type=range] { width: 100%; accent-color: var(--primary); }
+  .btn-reset {
+    width: 100%;
+    background: #FEF2F2;
+    color: var(--danger);
+    border: 2px solid #FECACA;
+    padding: 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover { background: var(--danger); color: white; border-color: var(--danger); }
+
+  /* ======= OVERLAY PESAN ======= */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    border-radius: 32px;
+  }
+  .overlay.show { opacity: 1; pointer-events: all; }
+  .overlay-card {
+    background: white;
+    border-radius: 24px;
+    padding: 32px 28px;
+    text-align: center;
+    max-width: 280px;
+    transform: scale(0.85);
+    transition: transform 0.3s;
+  }
+  .overlay.show .overlay-card { transform: scale(1); }
+  .overlay-icon { font-size: 56px; margin-bottom: 12px; }
+  .overlay-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+  .overlay-msg { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+  .overlay-buttons { display: flex; flex-direction: column; gap: 10px; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+
+  <!-- ===== SCREEN 1: MENU UTAMA ===== -->
+  <div class="screen active" id="screen-menu">
+    <div class="menu-logo">🖥️</div>
+    <div class="menu-title">TEBAK GAMBAR<br>INFORMATIKA</div>
+    <div class="menu-subtitle">Media Evaluasi Berpikir Komputasional • SMK Kelas X</div>
+    <div class="menu-stats">
+      <div class="stat-pill">⭐ <span id="total-stars">0</span> Bintang</div>
+      <div class="stat-pill">🏆 <span id="total-poin">0</span> Poin</div>
+    </div>
+    <div class="menu-buttons">
+      <button class="btn-menu-primary" onclick="showScreen('screen-level')">▶ MULAI</button>
+      <button class="btn-menu-secondary" onclick="showScreen('screen-cara')">📖 Cara Bermain</button>
+      <button class="btn-menu-secondary" onclick="showScreen('screen-pengaturan')">⚙️ Pengaturan</button>
+      <button class="btn-menu-secondary" onclick="keluar()">🚪 Keluar</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 2: PILIH LEVEL ===== -->
+  <div class="screen" id="screen-level">
+    <div class="level-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn-back" onclick="showScreen('screen-menu')">←</button>
+        <div>
+          <div style="font-size:12px;opacity:0.7;text-transform:uppercase;letter-spacing:1px;">Pilih Level</div>
+          <h1 style="font-size:20px;font-weight:800;color:white;margin-top:2px;">LEVEL PERMAINAN</h1>
+        </div>
+      </div>
+    </div>
+    <div class="level-grid" id="level-grid">
+      <!-- generated by JS -->
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 3: PERMAINAN ===== -->
+  <div class="screen" id="screen-game">
+    <div class="game-header">
+      <button class="btn-back" onclick="confirmKeluar()">←</button>
+      <div class="game-info">
+        <div id="level-badge" style="background:rgba(255,255,255,0.2);border-radius:8px;padding:4px 10px;font-size:13px;font-weight:700;">Level 1</div>
+        <div class="lives-display" id="lives-display"></div>
+        <div class="timer-display" id="timer">01:00</div>
+      </div>
+    </div>
+    <div class="game-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="question-num" id="q-num">Soal 1 / 5</div>
+        <div style="font-size:13px;color:var(--primary);font-weight:700;" id="poin-display">0 Poin</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:20%"></div></div>
+
+      <div class="image-card">
+        <div id="game-image" class="game-image">⬜</div>
+        <div class="hint-badge" id="hint-badge">BANTUAN</div>
+      </div>
+
+      <div class="answer-boxes" id="answer-boxes"></div>
+
+      <div class="keyboard-grid" id="keyboard-grid"></div>
+
+      <div class="action-row">
+        <button class="btn-clear-all" onclick="clearAllAnswer()">🗑️ Hapus Semua</button>
+        <button class="btn-skip" onclick="skipSoal()">⏭ Lewati</button>
+      </div>
+    </div>
+
+    <!-- Overlay: Jawaban Benar -->
+    <div class="overlay" id="overlay-benar">
+      <div class="overlay-card">
+        <div class="overlay-icon">🎉</div>
+        <div class="overlay-title">BENAR!</div>
+        <div class="overlay-msg" id="overlay-benar-msg">+120 Poin diperoleh!</div>
+        <div class="overlay-buttons">
+          <button class="btn-primary" onclick="nextSoal()">Lanjut ➜</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overlay: Game Over -->
+    <div class="overlay" id="overlay-gameover">
+      <div class="overlay-card">
+        <div class="overlay-icon">💔</div>
+        <div class="overlay-title">GAME OVER</div>
+        <div class="overlay-msg">Nyawa habis! Coba lagi untuk mendapatkan bintang lebih banyak.</div>
+        <div class="overlay-buttons">
+          <button class="btn-primary" onclick="restartLevel()">🔄 Coba Lagi</button>
+          <button class="btn-outline" onclick="showScreen('screen-level')">📋 Pilih Level</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 4: CARA BERMAIN ===== -->
+  <div class="screen" id="screen-cara">
+    <div class="header">
+      <button class="btn-back" onclick="showScreen('screen-menu')">←</button>
+      <h2>Cara Bermain</h2>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="cara-body">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h3>Amati Gambar</h3>
+          <p>Gambar yang ditampilkan pada layar adalah petunjuk untuk jawaban yang harus kamu tebak. Perhatikan baik-baik!</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h3>Susun Jawaban</h3>
+          <p>Tekan huruf-huruf pada keyboard untuk menyusun kata yang sesuai dengan gambar. Jawaban tersimpan di kotak atas.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h3>Poin & Bintang</h3>
+          <p>Setiap jawaban benar mendapat poin. Semakin cepat menjawab, semakin tinggi poin. Kumpulkan bintang ⭐⭐⭐ di setiap level!</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <h3>Gunakan Bantuan</h3>
+          <p>Jika kesulitan, tekan tombol "BANTUAN" untuk membuka huruf, menghapus huruf salah, atau melihat petunjuk gambar.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div class="step-text">
+          <h3>Sistem Nyawa</h3>
+          <p>Kamu memiliki 3 nyawa ❤️❤️❤️. Jawaban salah atau waktu habis mengurangi 1 nyawa. Selesaikan level sebelum nyawa habis!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 5: HASIL ===== -->
+  <div class="screen" id="screen-hasil">
+    <div class="header">
+      <div style="width:36px;"></div>
+      <h2>Hasil Level</h2>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="hasil-body">
+      <div class="hasil-banner">
+        <div class="hasil-label">Level <span id="hasil-level-num">1</span> — Selesai!</div>
+        <div class="hasil-word" id="hasil-level-name">Dasar Komputer</div>
+        <div class="hasil-stars" id="hasil-stars">⭐⭐⭐</div>
+      </div>
+      <div class="hasil-stats">
+        <div class="stat-card">
+          <div class="stat-label">Poin</div>
+          <div class="stat-val" id="hasil-poin">480</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Waktu</div>
+          <div class="stat-val" id="hasil-waktu">00:30</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Benar</div>
+          <div class="stat-val" id="hasil-benar">4/5</div>
+        </div>
+      </div>
+      <div class="hasil-buttons">
+        <button class="btn-primary" onclick="nextLevel()">Level Berikutnya ➜</button>
+        <button class="btn-primary" onclick="restartLevel()" style="background:var(--secondary);">🔄 Ulangi Level</button>
+        <button class="btn-outline" onclick="showScreen('screen-level')">📋 Pilih Level</button>
+        <button class="btn-outline" onclick="showScreen('screen-menu')" style="color:var(--text-muted);border-color:var(--border);">🏠 Menu Utama</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 6: PENGATURAN ===== -->
+  <div class="screen" id="screen-pengaturan">
+    <div class="header">
+      <button class="btn-back" onclick="showScreen('screen-menu')">←</button>
+      <h2>Pengaturan</h2>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="peng-body">
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-icon">🎵</div>
+          <div>
+            <div class="setting-name">Musik</div>
+            <div class="setting-desc">Musik latar permainan</div>
+          </div>
+        </div>
+        <button class="toggle on" id="toggle-musik" onclick="toggleSetting('musik')"></button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-icon">🔊</div>
+          <div>
+            <div class="setting-name">Efek Suara</div>
+            <div class="setting-desc">Suara tombol & notifikasi</div>
+          </div>
+        </div>
+        <button class="toggle on" id="toggle-sfx" onclick="toggleSetting('sfx')"></button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-icon">📳</div>
+          <div>
+            <div class="setting-name">Getaran</div>
+            <div class="setting-desc">Getar saat jawaban salah</div>
+          </div>
+        </div>
+        <button class="toggle on" id="toggle-getar" onclick="toggleSetting('getar')"></button>
+      </div>
+      <div class="setting-row slider-row">
+        <div class="setting-info">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="setting-icon">🔈</div>
+            <div class="setting-name">Volume Musik</div>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--primary);" id="vol-label">70%</div>
+        </div>
+        <input type="range" min="0" max="100" value="70" id="vol-slider" oninput="document.getElementById('vol-label').textContent=this.value+'%'">
+      </div>
+      <div class="setting-row slider-row">
+        <div class="setting-info">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="setting-icon">🔉</div>
+            <div class="setting-name">Volume Suara</div>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--primary);" id="sfx-label">80%</div>
+        </div>
+        <input type="range" min="0" max="100" value="80" id="sfx-slider" oninput="document.getElementById('sfx-label').textContent=this.value+'%'">
+      </div>
+      <button class="btn-reset" onclick="resetProgress()">🗑️ Reset Progress</button>
+    </div>
+  </div>
+
+</div><!-- /phone-frame -->
+
+<script>
+// ============================
+// DATA SOAL GAME
+// ============================
+const LEVELS = [
+  {
+    id: 1, name: "Dasar Komputer", unlocked: true,
+    soal: [
+      { emoji: "🖥️", kata: "MONITOR", hint: "Layar tampilan komputer" },
+      { emoji: "⌨️", kata: "KEYBOARD", hint: "Alat input ketikan" },
+      { emoji: "🖱️", kata: "MOUSE", hint: "Alat penunjuk kursor" },
+      { emoji: "💾", kata: "STORAGE", hint: "Media penyimpanan data" },
+      { emoji: "🔌", kata: "PROCESSOR", hint: "Otak komputer / CPU" },
+    ]
+  },
+  {
+    id: 2, name: "Jaringan Komputer", unlocked: false,
+    soal: [
+      { emoji: "📡", kata: "ROUTER", hint: "Perangkat penghubung jaringan" },
+      { emoji: "🌐", kata: "INTERNET", hint: "Jaringan global" },
+      { emoji: "🔗", kata: "PROTOKOL", hint: "Aturan komunikasi data" },
+      { emoji: "📶", kata: "WIFI", hint: "Jaringan nirkabel" },
+      { emoji: "🔒", kata: "FIREWALL", hint: "Pelindung jaringan" },
+    ]
+  },
+  {
+    id: 3, name: "Algoritma & Pemrograman", unlocked: false,
+    soal: [
+      { emoji: "🔄", kata: "LOOPING", hint: "Pengulangan dalam kode" },
+      { emoji: "❓", kata: "KONDISI", hint: "Percabangan if-else" },
+      { emoji: "📦", kata: "VARIABEL", hint: "Wadah penyimpan nilai" },
+      { emoji: "⚙️", kata: "FUNGSI", hint: "Blok kode yang bisa dipanggil" },
+      { emoji: "🐛", kata: "DEBUGGING", hint: "Mencari dan memperbaiki bug" },
+    ]
+  },
+  {
+    id: 4, name: "Berpikir Komputasional", unlocked: false,
+    soal: [
+      { emoji: "🧩", kata: "DEKOMPOSISI", hint: "Memecah masalah besar menjadi kecil" },
+      { emoji: "🔍", kata: "ABSTRAKSI", hint: "Menyederhanakan informasi" },
+      { emoji: "🔁", kata: "POLA", hint: "Mengenali kesamaan/keteraturan" },
+      { emoji: "📋", kata: "ALGORITMA", hint: "Langkah-langkah penyelesaian masalah" },
+      { emoji: "💡", kata: "LOGIKA", hint: "Kemampuan berpikir sistematis" },
+    ]
+  },
+  {
+    id: 5, name: "Sistem Operasi", unlocked: false,
+    soal: [
+      { emoji: "🪟", kata: "WINDOWS", hint: "Sistem operasi Microsoft" },
+      { emoji: "🐧", kata: "LINUX", hint: "Sistem operasi open source" },
+      { emoji: "📁", kata: "DIREKTORI", hint: "Folder penyimpan file" },
+      { emoji: "⚡", kata: "PROSES", hint: "Program yang sedang berjalan" },
+      { emoji: "🧠", kata: "MEMORI", hint: "RAM / penyimpanan sementara" },
+    ]
+  },
+  {
+    id: 6, name: "Keamanan Digital", unlocked: false,
+    soal: [
+      { emoji: "🔑", kata: "PASSWORD", hint: "Kata sandi akun" },
+      { emoji: "🛡️", kata: "ENKRIPSI", hint: "Pengacakan data agar aman" },
+      { emoji: "🦠", kata: "MALWARE", hint: "Program berbahaya" },
+      { emoji: "🎣", kata: "PHISHING", hint: "Penipuan digital untuk curi data" },
+      { emoji: "👤", kata: "IDENTITAS", hint: "Siapa dirimu di dunia digital" },
+    ]
+  },
+];
+
+// ============================
+// STATE GAME
+// ============================
+let state = {
+  currentScreen: 'screen-menu',
+  currentLevel: 0,
+  currentSoalIdx: 0,
+  currentAnswer: [],
+  lives: 3,
+  poin: 0,
+  timer: 60,
+  timerInterval: null,
+  hintUsed: false,
+  totalPoin: 0,
+  totalStars: 0,
+  levelProgress: {},
+  gameStartTime: 0,
+  soalBenar: 0,
+};
+
+// Load from localStorage
+function loadState() {
+  try {
+    const saved = localStorage.getItem('tebakGameState');
+    if (saved) {
+      const s = JSON.parse(saved);
+      state.totalPoin = s.totalPoin || 0;
+      state.totalStars = s.totalStars || 0;
+      state.levelProgress = s.levelProgress || {};
+    }
+  } catch(e) {}
+  updateMenuStats();
+  renderLevelGrid();
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('tebakGameState', JSON.stringify({
+      totalPoin: state.totalPoin,
+      totalStars: state.totalStars,
+      levelProgress: state.levelProgress,
+    }));
+  } catch(e) {}
+}
+
+// ============================
+// NAVIGASI SCREEN
+// ============================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  state.currentScreen = id;
+  if (id === 'screen-level') renderLevelGrid();
+  if (id === 'screen-menu') updateMenuStats();
+}
+
+function updateMenuStats() {
+  document.getElementById('total-stars').textContent = state.totalStars;
+  document.getElementById('total-poin').textContent = state.totalPoin;
+}
+
+// ============================
+// LEVEL GRID
+// ============================
+function renderLevelGrid() {
+  const grid = document.getElementById('level-grid');
+  // Unlock logic
+  LEVELS.forEach((lvl, idx) => {
+    if (idx === 0) lvl.unlocked = true;
+    else lvl.unlocked = !!(state.levelProgress[LEVELS[idx-1].id]?.completed);
+  });
+
+  grid.innerHTML = LEVELS.map((lvl, idx) => {
+    const prog = state.levelProgress[lvl.id] || {};
+    const stars = prog.stars || 0;
+    const starStr = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+    if (!lvl.unlocked) {
+      return `<div class="level-card locked">
+        <div class="lock-icon">🔒</div>
+        <div class="level-name" style="margin-top:4px;">Level ${lvl.id}</div>
+      </div>`;
+    }
+    return `<div class="level-card ${prog.completed ? 'completed' : ''}" onclick="startLevel(${idx})">
+      <div class="level-number">${lvl.id}</div>
+      <div class="level-stars">${starStr}</div>
+      <div class="level-name">${lvl.name}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================
+// MULAI LEVEL
+// ============================
+function startLevel(levelIdx) {
+  state.currentLevel = levelIdx;
+  state.currentSoalIdx = 0;
+  state.lives = 3;
+  state.poin = 0;
+  state.soalBenar = 0;
+  state.gameStartTime = Date.now();
+  showScreen('screen-game');
+  loadSoal();
+}
+
+function loadSoal() {
+  const lvl = LEVELS[state.currentLevel];
+  const soal = lvl.soal[state.currentSoalIdx];
+  state.currentAnswer = Array(soal.kata.length).fill('');
+  state.hintUsed = false;
+  state.timer = 60;
+
+  document.getElementById('level-badge').textContent = `Level ${lvl.id}`;
+  document.getElementById('q-num').textContent = `Soal ${state.currentSoalIdx + 1} / ${lvl.soal.length}`;
+  document.getElementById('poin-display').textContent = `${state.poin} Poin`;
+  document.getElementById('progress-fill').style.width = `${((state.currentSoalIdx) / lvl.soal.length) * 100}%`;
+  document.getElementById('hint-badge').classList.remove('show');
+  document.getElementById('game-image').textContent = soal.emoji;
+  document.getElementById('game-image').classList.remove('blurred');
+
+  renderLives();
+  renderAnswerBoxes();
+  renderKeyboard(soal.kata);
+  startTimer();
+}
+
+function renderLives() {
+  const el = document.getElementById('lives-display');
+  el.innerHTML = Array(3).fill(0).map((_, i) =>
+    `<span class="heart">${i < state.lives ? '❤️' : '🖤'}</span>`
+  ).join('');
+}
+
+function renderAnswerBoxes() {
+  const soal = LEVELS[state.currentLevel].soal[state.currentSoalIdx];
+  const boxes = document.getElementById('answer-boxes');
+  boxes.innerHTML = soal.kata.split('').map((_, i) =>
+    `<div class="answer-box ${state.currentAnswer[i] ? '' : 'empty'}" id="box-${i}">${state.currentAnswer[i] || ''}</div>`
+  ).join('');
+}
+
+const KEYBOARD_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+function renderKeyboard(kata) {
+  const grid = document.getElementById('keyboard-grid');
+  const kataLetters = kata.split('');
+  const others = KEYBOARD_LETTERS.filter(l => !kataLetters.includes(l));
+  const needed = Math.max(0, 18 - kataLetters.length);
+  const shuffled = shuffle([...kataLetters, ...shuffle(others).slice(0, needed)]);
+  const display = shuffled.slice(0, 18);
+
+  // ✅ FIX: onclick="pressKey(this, '${l}')" — kirim `this` agar elemen tombol tersedia di fungsi
+  grid.innerHTML = display.map((l, index) =>
+    `<button class="key-btn" id="key-${l}-${index}" onclick="pressKey(this, '${l}')">${l}</button>`
+  ).join('') +
+  `<button class="key-btn key-del" onclick="deleteKey()">⌫ Del</button>` +
+  `<button class="key-btn key-hint" onclick="useHint()">💡 Bantuan</button>`;
+}
+
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+// ============================
+// TIMER
+// ============================
+function startTimer() {
+  clearInterval(state.timerInterval);
+  state.timer = 60;
+  updateTimerDisplay();
+  state.timerInterval = setInterval(() => {
+    state.timer--;
+    updateTimerDisplay();
+    if (state.timer <= 10) {
+      document.getElementById('timer').classList.add('warning');
+    }
+    if (state.timer <= 0) {
+      clearInterval(state.timerInterval);
+      loseLife('waktu habis');
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = String(Math.floor(state.timer / 60)).padStart(2, '0');
+  const s = String(state.timer % 60).padStart(2, '0');
+  document.getElementById('timer').textContent = `${m}:${s}`;
+  if (state.timer > 10) document.getElementById('timer').classList.remove('warning');
+}
+
+// ============================
+// INPUT & LOGIC
+// ============================
+// ✅ FIX: parameter (btn, letter) — btn adalah elemen DOM tombol, letter adalah huruf yang ditekan
+function pressKey(btn, letter) {
+  const soal = LEVELS[state.currentLevel].soal[state.currentSoalIdx];
+  const emptyIdx = state.currentAnswer.indexOf('');
+  if (emptyIdx === -1) return;
+
+  state.currentAnswer[emptyIdx] = letter;
+  renderAnswerBoxes();
+
+  // ✅ FIX: btn sekarang adalah elemen DOM yang valid, classList.add('used') tidak akan error
+  btn.classList.add('used');
+
+  // Cek apakah jawaban sudah lengkap
+  if (!state.currentAnswer.includes('')) {
+    checkAnswer();
+  }
+}
+
+function deleteKey() {
+  // Hapus huruf terakhir yang terisi
+  for (let i = state.currentAnswer.length - 1; i >= 0; i--) {
+    if (state.currentAnswer[i] !== '') {
+      state.currentAnswer[i] = '';
+      // Re-enable tombol huruf yang terakhir dipakai
+      const usedKeys = document.querySelectorAll('.key-btn.used');
+      if (usedKeys.length > 0) {
+        usedKeys[usedKeys.length - 1].classList.remove('used');
+      }
+      break;
+    }
+  }
+  renderAnswerBoxes();
+}
+
+function clearAllAnswer() {
+  const soal = LEVELS[state.currentLevel].soal[state.currentSoalIdx];
+  // Cek apakah ada huruf yang sudah diisi
+  const adaIsi = state.currentAnswer.some(h => h !== '');
+  if (!adaIsi) return;
+
+  // Kosongkan semua jawaban
+  state.currentAnswer = Array(soal.kata.length).fill('');
+
+  // Re-enable semua tombol huruf (kecuali del dan hint)
+  document.querySelectorAll('.key-btn:not(.key-del):not(.key-hint)').forEach(b => b.classList.remove('used'));
+
+  // Animasi flash merah pada kotak jawaban
+  renderAnswerBoxes();
+  document.querySelectorAll('.answer-box').forEach(b => {
+    b.style.transition = 'background 0.15s';
+    b.style.background = '#FEF2F2';
+    b.style.borderColor = '#FECACA';
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.answer-box').forEach(b => {
+      b.style.background = '';
+      b.style.borderColor = '';
+    });
+    renderAnswerBoxes();
+  }, 300);
+}
+
+function checkAnswer() {
+  const soal = LEVELS[state.currentLevel].soal[state.currentSoalIdx];
+  const typed = state.currentAnswer.join('');
+  if (typed === soal.kata) {
+    // Benar!
+    clearInterval(state.timerInterval);
+    state.soalBenar++;
+    const bonusPoin = state.hintUsed ? 60 : 120;
+    const timePoin = state.timer * 2;
+    const earned = bonusPoin + timePoin;
+    state.poin += earned;
+
+    // Flash green
+    document.querySelectorAll('.answer-box').forEach(b => b.classList.add('correct'));
+    document.getElementById('overlay-benar-msg').textContent = `+${earned} Poin diperoleh!`;
+    setTimeout(() => showOverlay('overlay-benar'), 400);
+  } else {
+    // Salah
+    document.querySelectorAll('.answer-box').forEach(b => b.classList.add('wrong'));
+    setTimeout(() => {
+      document.querySelectorAll('.answer-box').forEach(b => b.classList.remove('wrong'));
+      state.currentAnswer = Array(soal.kata.length).fill('');
+      document.querySelectorAll('.key-btn:not(.key-del):not(.key-hint)').forEach(b => b.classList.remove('used'));
+      renderAnswerBoxes();
+      loseLife('salah');
+    }, 500);
+  }
+}
+
+function loseLife(reason) {
+  state.lives--;
+  renderLives();
+  if (state.lives <= 0) {
+    clearInterval(state.timerInterval);
+    setTimeout(() => showOverlay('overlay-gameover'), 300);
+  }
+}
+
+function useHint() {
+  if (state.hintUsed) return;
+  state.hintUsed = true;
+  const soal = LEVELS[state.currentLevel].soal[state.currentSoalIdx];
+  const hintBadge = document.getElementById('hint-badge');
+  hintBadge.classList.add('show');
+  hintBadge.textContent = soal.hint;
+
+  // Buka huruf pertama yang masih kosong
+  const emptyIdx = state.currentAnswer.indexOf('');
+  if (emptyIdx !== -1) {
+    state.currentAnswer[emptyIdx] = soal.kata[emptyIdx];
+    renderAnswerBoxes();
+
+    // Tandai tombol huruf tersebut sebagai 'used'
+    const targetLetter = soal.kata[emptyIdx];
+    const keyBtns = document.querySelectorAll('.key-btn:not(.key-del):not(.key-hint):not(.used)');
+    for (const btn of keyBtns) {
+      if (btn.textContent.trim() === targetLetter) {
+        btn.classList.add('used');
+        break;
+      }
+    }
+  }
+}
+
+function skipSoal() {
+  clearInterval(state.timerInterval);
+  state.currentAnswer = Array(LEVELS[state.currentLevel].soal[state.currentSoalIdx].kata.length).fill('');
+  loseLife('lewat');
+  if (state.lives > 0) nextSoal();
+}
+
+function nextSoal() {
+  hideOverlay('overlay-benar');
+  const lvl = LEVELS[state.currentLevel];
+  state.currentSoalIdx++;
+  if (state.currentSoalIdx >= lvl.soal.length) {
+    finishLevel();
+  } else {
+    loadSoal();
+  }
+}
+
+function showOverlay(id) {
+  document.getElementById(id).classList.add('show');
+}
+function hideOverlay(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+// ============================
+// SELESAI LEVEL
+// ============================
+function finishLevel() {
+  clearInterval(state.timerInterval);
+  const lvl = LEVELS[state.currentLevel];
+  const timeTaken = Math.floor((Date.now() - state.gameStartTime) / 1000);
+  const mm = String(Math.floor(timeTaken / 60)).padStart(2, '0');
+  const ss = String(timeTaken % 60).padStart(2, '0');
+
+  // Stars: 1=≥1 benar, 2=≥3 benar, 3=all benar
+  let stars = 0;
+  if (state.soalBenar >= 1) stars = 1;
+  if (state.soalBenar >= 3) stars = 2;
+  if (state.soalBenar >= lvl.soal.length) stars = 3;
+
+  const prev = state.levelProgress[lvl.id] || {};
+  if (!prev.completed || stars > (prev.stars || 0)) {
+    const starDiff = stars - (prev.stars || 0);
+    state.totalStars += Math.max(0, starDiff);
+    state.totalPoin += state.poin;
+    state.levelProgress[lvl.id] = { completed: true, stars, poin: state.poin };
+    saveState();
+  }
+
+  document.getElementById('hasil-level-num').textContent = lvl.id;
+  document.getElementById('hasil-level-name').textContent = lvl.name;
+  document.getElementById('hasil-stars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+  document.getElementById('hasil-poin').textContent = state.poin;
+  document.getElementById('hasil-waktu').textContent = `${mm}:${ss}`;
+  document.getElementById('hasil-benar').textContent = `${state.soalBenar}/${lvl.soal.length}`;
+
+  showScreen('screen-hasil');
+}
+
+function nextLevel() {
+  const nextIdx = state.currentLevel + 1;
+  if (nextIdx < LEVELS.length && LEVELS[nextIdx].unlocked) {
+    startLevel(nextIdx);
+  } else {
+    showScreen('screen-level');
+  }
+}
+
+function restartLevel() {
+  hideOverlay('overlay-gameover');
+  startLevel(state.currentLevel);
+}
+
+function confirmKeluar() {
+  if (confirm('Keluar dari permainan? Progress soal ini tidak tersimpan.')) {
+    clearInterval(state.timerInterval);
+    showScreen('screen-level');
+  }
+}
+
+function keluar() {
+  if (confirm('Yakin ingin keluar dari game?')) {
+    window.close();
+  }
+}
+
+// ============================
+// PENGATURAN
+// ============================
+function toggleSetting(name) {
+  const btn = document.getElementById(`toggle-${name}`);
+  btn.classList.toggle('on');
+}
+
+function resetProgress() {
+  if (confirm('Reset semua progress? Semua bintang dan poin akan hilang!')) {
+    state.totalPoin = 0;
+    state.totalStars = 0;
+    state.levelProgress = {};
+    saveState();
+    updateMenuStats();
+    renderLevelGrid();
+    alert('Progress berhasil direset!');
+  }
+}
+
+// ============================
+// INIT
+// ============================
+loadState();
+</script>
+</body>
+</html>
